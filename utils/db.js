@@ -41,8 +41,8 @@ class DBClient {
       await this.client.connect();
       this.db = this.client.db(this.dbName);
     }
-    const user = await this.db.collection('users').findOne({ email });
-    return !!user; // this is smart :3
+    const file = await this.db.collection('users').findOne({ email });
+    return !!file; // this is smart :3
   }
 
   async createUser(email, password) {
@@ -66,6 +66,31 @@ class DBClient {
     const objectId = new ObjectId(id);
     const user = await this.db.collection('users').findOne({ _id: objectId });
     return user;
+  }
+
+  async findFileById(id) {
+    const objectId = new ObjectId(id);
+    const file = await this.db.collection('files').findOne({ _id: objectId });
+    return file;
+  }
+
+  async createFile(fileData) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
+
+    const result = await this.db.collection('files').insertOne(fileData);
+
+    const savedFile = {
+      id: result.insertedId.toHexString(),
+      userId: fileData.userId,
+      name: fileData.name,
+      type: fileData.type,
+      isPublic: fileData.isPublic,
+      parentId: fileData.parentId,
+    };
+    return savedFile;
   }
 }
 
