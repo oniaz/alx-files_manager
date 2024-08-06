@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 
 class DBClient {
@@ -55,6 +55,17 @@ class DBClient {
     const result = await this.db.collection('users').insertOne({ email, password: hashedPassword });
 
     return result.insertedId;
+  }
+
+  async findUserByEmailAndPassword(email, password) {
+    const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
+    return this.db.collection('users').findOne({ email, password: hashedPassword });
+  }
+
+  async findUserById(id) {
+    const objectId = new ObjectId(id);
+    const user = await this.db.collection('users').findOne({ _id: objectId });
+    return user;
   }
 }
 
