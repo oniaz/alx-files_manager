@@ -76,7 +76,7 @@ class DBClient {
     return user;
   }
 
-  // checking if file exists
+  // (1) checking if file exists
   async findFileById(id) {
     if (!this.db) {
       await this.client.connect();
@@ -87,7 +87,7 @@ class DBClient {
     return file;
   }
 
-  // store a file in db
+  // (1) store a file in db
   async createFile(fileData) {
     if (!this.db) {
       await this.client.connect();
@@ -101,12 +101,12 @@ class DBClient {
       name: fileData.name,
       type: fileData.type,
       isPublic: fileData.isPublic,
-      parentId: fileData.parentId === '0' ? '0' : fileData.parentId.toHexString(),
+      parentId: fileData.parentId === '0' ? 0 : fileData.parentId.toHexString(),
     };
     return savedFile;
   }
 
-  // retrieving a specific file for specific user id
+  // (2) retrieving a specific file for specific user id
   async findFileByIdAndUserId(id, userId) {
     if (!this.db) {
       await this.client.connect();
