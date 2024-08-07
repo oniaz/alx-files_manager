@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/status', AppController.getStatus);
 router.get('/stats', AppController.getStats);
-router.get('/ooga', AppController.getOoga);
+// router.get('/ooga', AppController.getOoga);
 router.post('/users', UsersController.postNew);
 router.get('/users/me', UsersController.getMe);
 router.get('/connect', AuthController.getConnect);

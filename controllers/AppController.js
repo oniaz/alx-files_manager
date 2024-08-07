@@ -7,9 +7,9 @@ class AppController {
     res.status(200).json({ redis: redisClient.isAlive(), db: dbClient.isAlive() });
   }
 
-  static getOoga(req, res) {
-    res.status(200).json({ oog: 13 });
-  }
+  // static getOoga(req, res) {
+  //   res.status(200).json({ oog: 13 });
+  // }
 
   static async getStats(req, res) {
     const users = await dbClient.nbUsers();
