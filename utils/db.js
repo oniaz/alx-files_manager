@@ -136,10 +136,19 @@ class DBClient {
       await this.client.connect();
       this.db = this.client.db(this.dbName);
     }
-    const objectParentId = parentId === 0 ? '0' : new ObjectId(parentId);
+
+    let query;
+    if (parentId === 0 || parentId === '0') {
+      query = { parentId: { $in: [0, '0'] } };
+    } else {
+      query = { parentId: new ObjectId(parentId) };
+    }
+    // const objectParentId = (parentId === 0 || parentId === '0') ? '0' : new ObjectId(parentId);
+    // console.log(objectParentId);
+    // console.log(typeof (objectParentId));
 
     const results = await this.db.collection('files').aggregate([
-      { $match: { parentId: objectParentId } },
+      { $match: query },
       { $skip: skip },
       { $limit: 20 },
       {
