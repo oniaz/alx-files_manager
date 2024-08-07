@@ -53,7 +53,7 @@ class FilesController {
       userId,
       name,
       type,
-      // isPublic,
+      isPublic,
       parentId,
     };
 
@@ -62,7 +62,7 @@ class FilesController {
       const fileUUID = uuidv4();
       const localPath = path.join(folderPath, fileUUID);
       fileData.localPath = localPath;
-      fileData.isPublic = isPublic;
+      // fileData.isPublic = isPublic;
 
       if (!fs.existsSync(folderPath)) {
         await fsPromises.mkdir(folderPath, { recursive: true });
