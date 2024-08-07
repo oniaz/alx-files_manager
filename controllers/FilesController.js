@@ -55,7 +55,7 @@ class FilesController {
       name,
       type,
       isPublic,
-      parentId,
+      parentId: parentId === 0 ? '0' : new ObjectId(parentId),
     };
 
     if (type !== 'folder') {
