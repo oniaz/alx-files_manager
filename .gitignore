@@ -1,2 +1,5 @@
 **/node_modules/**
 package-lock.json
+image.png
+dump.rdb
+image_upload.py
