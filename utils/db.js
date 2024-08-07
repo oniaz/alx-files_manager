@@ -58,20 +58,67 @@ class DBClient {
   }
 
   async findUserByEmailAndPassword(email, password) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
     const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
     return this.db.collection('users').findOne({ email, password: hashedPassword });
   }
 
   async findUserById(id) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
     const objectId = new ObjectId(id);
     const user = await this.db.collection('users').findOne({ _id: objectId });
     return user;
   }
 
   async findFileById(id) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
     const objectId = new ObjectId(id);
     const file = await this.db.collection('files').findOne({ _id: objectId });
     return file;
+  }
+
+  async findFileByIdAndUserId(id, userId) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
+    const objectId = new ObjectId(id);
+    const file = await this.db.collection('files').findOne({ _id: objectId, userId });
+    return file;
+  }
+
+  async findFilesByParentId(parentId, skip) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
+    const results = await this.db.collection('files').aggregate([
+      { $match: { parentId } },
+      { $skip: skip },
+      { $limit: 20 },
+      {
+        $project: {
+          _id: 0,
+          id: { $toString: '$_id' },
+          userId: 1,
+          name: 1,
+          type: 1,
+          isPublic: 1,
+          parentId: 1,
+        },
+      },
+    ]).toArray();
+
+    return results;
   }
 
   async createFile(fileData) {
