@@ -125,7 +125,7 @@ class DBClient {
       name: result.name,
       type: result.type,
       isPublic: result.isPublic,
-      parentId: result.parentId === '0' ? 0 : result.parentId.toHexString(),
+      parentId: (result.parentId === 0 || result.parentId === '0') ? 0 : result.parentId.toHexString(),
     };
     return file;
   }
@@ -152,7 +152,7 @@ class DBClient {
           isPublic: 1,
           parentId: {
             $cond: {
-              if: { $eq: ['$parentId', '0'] },
+              if: { $or: [{ $eq: ['$parentId', 0] }, { $eq: ['$parentId', '0'] }] },
               then: 0,
               else: { $toString: '$parentId' },
             },
