@@ -125,17 +125,18 @@ class DBClient {
       name: result.name,
       type: result.type,
       isPublic: result.isPublic,
-      parentId: result.parentId === '0' ? '0' : result.parentId.toHexString(),
+      parentId: result.parentId === '0' ? 0 : result.parentId.toHexString(),
     };
     return file;
   }
 
+  // (3) retrieve a file by parent id
   async findFilesByParentId(parentId, skip) {
     if (!this.db) {
       await this.client.connect();
       this.db = this.client.db(this.dbName);
     }
-    const objectParentId = parentId === 0 ? parentId : new ObjectId(parentId);
+    const objectParentId = parentId === 0 ? '0' : new ObjectId(parentId);
 
     const results = await this.db.collection('files').aggregate([
       { $match: { parentId: objectParentId } },

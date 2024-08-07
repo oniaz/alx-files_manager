@@ -110,9 +110,9 @@ class FilesController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const parentId = parseInt(req.query.parentId, 10) || 0;
+    const parentId = req.query.parentId || 0;
     const page = parseInt(req.query.page, 10) || 0;
-    const skip = page * 20;
+    const skip = (page) * 20;
 
     const results = await dbClient.findFilesByParentId(parentId, skip);
 
