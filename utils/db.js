@@ -126,12 +126,11 @@ class DBClient {
       await this.client.connect();
       this.db = this.client.db(this.dbName);
     }
-
     const result = await this.db.collection('files').insertOne(fileData);
 
     const savedFile = {
       id: result.insertedId.toHexString(),
-      userId: fileData.userId,
+      userId: fileData.userId.toHexString(),
       name: fileData.name,
       type: fileData.type,
       isPublic: fileData.isPublic,

@@ -2,6 +2,7 @@ const fs = require('fs');
 const fsPromises = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { ObjectId } = require('mongodb');
 
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
@@ -50,7 +51,7 @@ class FilesController {
     }
 
     const fileData = {
-      userId,
+      userId: new ObjectId(userId),
       name,
       type,
       isPublic,
@@ -62,7 +63,6 @@ class FilesController {
       const fileUUID = uuidv4();
       const localPath = path.join(folderPath, fileUUID);
       fileData.localPath = localPath;
-      // fileData.isPublic = isPublic;
 
       if (!fs.existsSync(folderPath)) {
         await fsPromises.mkdir(folderPath, { recursive: true });
