@@ -212,7 +212,7 @@ class FilesController {
       }
       const mimeType = mime.lookup(file.name) || 'application/octet-stream';
       res.setHeader('Content-Type', mimeType);
-      return res.sendFile(absPath);
+      return res.status(200).sendFile(absPath);
     } catch (err) {
       if (err.code === 'ENOENT') {
         return res.status(404).json({ error: 'Not found' });
