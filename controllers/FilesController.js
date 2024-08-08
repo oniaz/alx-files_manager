@@ -87,7 +87,7 @@ class FilesController {
     }
 
     const fileId = req.params.id;
-    if (!fileId) {
+    if (!fileId || fileId === '0') {
       return res.status(404).json({ error: 'Not found' });
     }
 
@@ -118,6 +118,20 @@ class FilesController {
 
     return res.status(200).json(results);
   }
+
+  // static async putPublish(req, res) {
+  //   const token = req.headers['x-token'];
+  //   if (!token) {
+  //     return res.status(401).json({ error: 'Unauthorized' });
+  //   }
+
+  //   const userId = await redisClient.get(`auth_${token}`);
+  //   if (!userId) {
+  //     return res.status(401).json({ error: 'Unauthorized' });
+  //   }
+
+  //   return res.status(200).end();
+  // }
 }
 
 module.exports = FilesController;
