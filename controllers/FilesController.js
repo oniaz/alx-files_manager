@@ -3,7 +3,7 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
-// const { mime } = require('mime-types');
+const mime = require('mime-types');
 
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
@@ -205,11 +205,14 @@ class FilesController {
 
     try {
       await fsPromises.access(file.localPath);
-      const data = await fsPromises.readFile(file.localPath, 'utf8');
-      // const mimeType = mime.lookup(file.name);
-      // return res.status(200).send(data).setHeader('Content-Type'
-      // , mimeType || 'application/octet-stream');
-      return res.status(200).send(data);
+      const { size } = req.query;
+      let absPath = file.localPath;
+      if (size) {
+        absPath = `${file.localPath}_${size}`;
+      }
+      const mimeType = mime.lookup(file.name) || 'application/octet-stream';
+      res.setHeader('Content-Type', mimeType);
+      return res.sendFile(absPath);
     } catch (err) {
       if (err.code === 'ENOENT') {
         return res.status(404).json({ error: 'Not found' });
