@@ -172,6 +172,56 @@ class DBClient {
 
     return results;
   }
+
+  async setToPublic(id) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
+    const objectId = new ObjectId(id);
+
+    await this.db.collection('files').updateOne({ _id: objectId }, { $set: { isPublic: true } });
+    const updatedFile = await this.db.collection('files').findOne(objectId);
+
+    if (!updatedFile) {
+      return null;
+    }
+
+    const file = {
+      id: updatedFile._id.toHexString(),
+      userId: updatedFile.userId.toHexString(),
+      name: updatedFile.name,
+      type: updatedFile.type,
+      isPublic: updatedFile.isPublic,
+      parentId: (updatedFile.parentId === 0 || updatedFile.parentId === '0') ? 0 : updatedFile.parentId.toHexString(),
+    };
+    return file;
+  }
+
+  async setToPrivate(id) {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
+    const objectId = new ObjectId(id);
+
+    await this.db.collection('files').updateOne({ _id: objectId }, { $set: { isPublic: false } });
+    const updatedFile = await this.db.collection('files').findOne(objectId);
+
+    if (!updatedFile) {
+      return null;
+    }
+
+    const file = {
+      id: updatedFile._id.toHexString(),
+      userId: updatedFile.userId.toHexString(),
+      name: updatedFile.name,
+      type: updatedFile.type,
+      isPublic: updatedFile.isPublic,
+      parentId: (updatedFile.parentId === 0 || updatedFile.parentId === '0') ? 0 : updatedFile.parentId.toHexString(),
+    };
+    return file;
+  }
 }
 
 const dbClient = new DBClient();
