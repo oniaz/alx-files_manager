@@ -101,7 +101,7 @@ class DBClient {
       name: fileData.name,
       type: fileData.type,
       isPublic: fileData.isPublic,
-      parentId: (fileData.parentId === '0' || fileData.parentId === 0) ? '0' : fileData.parentId.toHexString(),
+      parentId: (fileData.parentId === '0' || fileData.parentId === 0) ? 0 : fileData.parentId.toHexString(),
     };
     return savedFile;
   }

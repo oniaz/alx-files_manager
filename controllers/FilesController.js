@@ -26,7 +26,7 @@ class FilesController {
       data,
     } = req.body;
 
-    const parentId = req.body.parentId || 0;
+    const parentId = req.body.parentId || '0';
     const isPublic = req.body.isPublic || false;
 
     if (!name) {
@@ -41,7 +41,7 @@ class FilesController {
       return res.status(400).json({ error: 'Missing data' });
     }
 
-    if (parentId) {
+    if (parentId !== '0') {
       const parentFile = await dbClient.findFileById(parentId);
       if (!parentFile) {
         return res.status(400).json({ error: 'Parent not found' });
@@ -56,7 +56,7 @@ class FilesController {
       name,
       type,
       isPublic,
-      parentId: parentId === 0 ? '0' : new ObjectId(parentId),
+      parentId: parentId === '0' ? '0' : new ObjectId(parentId),
     };
 
     if (type !== 'folder') {
@@ -111,7 +111,7 @@ class FilesController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const parentId = req.query.parentId || 0;
+    const parentId = req.query.parentId || '0';
     const page = parseInt(req.query.page, 10) || 0;
     const skip = (page) * 20;
 
