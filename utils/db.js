@@ -101,7 +101,7 @@ class DBClient {
       name: fileData.name,
       type: fileData.type,
       isPublic: fileData.isPublic,
-      parentId: fileData.parentId === '0' ? 0 : fileData.parentId.toHexString(),
+      parentId: (fileData.parentId === '0' || fileData.parentId === 0) ? '0' : fileData.parentId.toHexString(),
     };
     return savedFile;
   }
@@ -125,7 +125,7 @@ class DBClient {
       name: result.name,
       type: result.type,
       isPublic: result.isPublic,
-      parentId: (result.parentId === 0 || result.parentId === '0') ? 0 : result.parentId.toHexString(),
+      parentId: (result.parentId === 0 || result.parentId === '0') ? '0' : result.parentId.toHexString(),
     };
     return file;
   }
@@ -162,7 +162,7 @@ class DBClient {
           parentId: {
             $cond: {
               if: { $or: [{ $eq: ['$parentId', 0] }, { $eq: ['$parentId', '0'] }] },
-              then: 0,
+              then: '0',
               else: { $toString: '$parentId' },
             },
           },
@@ -193,7 +193,7 @@ class DBClient {
       name: updatedFile.name,
       type: updatedFile.type,
       isPublic: updatedFile.isPublic,
-      parentId: (updatedFile.parentId === 0 || updatedFile.parentId === '0') ? 0 : updatedFile.parentId.toHexString(),
+      parentId: (updatedFile.parentId === 0 || updatedFile.parentId === '0') ? '0' : updatedFile.parentId.toHexString(),
     };
     return file;
   }
@@ -218,7 +218,7 @@ class DBClient {
       name: updatedFile.name,
       type: updatedFile.type,
       isPublic: updatedFile.isPublic,
-      parentId: (updatedFile.parentId === 0 || updatedFile.parentId === '0') ? 0 : updatedFile.parentId.toHexString(),
+      parentId: (updatedFile.parentId === 0 || updatedFile.parentId === '0') ? '0' : updatedFile.parentId.toHexString(),
     };
     return file;
   }
