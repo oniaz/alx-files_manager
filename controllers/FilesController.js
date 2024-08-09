@@ -183,10 +183,6 @@ class FilesController {
       return res.status(404).json({ error: 'Not found' });
     }
 
-    if (file.type === 'folder') {
-      return res.status(400).json({ error: 'A folder doesn\'t have content' });
-    }
-
     if (!file.isPublic) {
       const token = req.headers['x-token'];
       if (!token) {
@@ -201,6 +197,10 @@ class FilesController {
       if (file.userId.toHexString() !== userId) {
         return res.status(404).json({ error: 'Not found' });
       }
+    }
+
+    if (file.type === 'folder') {
+      return res.status(400).json({ error: 'A folder doesn\'t have content' });
     }
 
     try {
