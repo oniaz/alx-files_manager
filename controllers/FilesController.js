@@ -4,9 +4,12 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
 const mime = require('mime-types');
+const Bull = require('bull');
 
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
+
+const fileQueue = new Bull('fileQueue');
 
 class FilesController {
   static async postUpload(req, res) {
@@ -65,6 +68,7 @@ class FilesController {
       const localPath = path.join(folderPath, fileUUID);
       fileData.localPath = localPath;
 
+      // create file locally
       if (!fs.existsSync(folderPath)) {
         await fsPromises.mkdir(folderPath, { recursive: true });
       }
@@ -73,6 +77,11 @@ class FilesController {
     }
 
     const savedFile = await dbClient.createFile(fileData);
+
+    if (type === 'image') {
+      fileQueue.add({ userId, fileId: savedFile.insertedId.toString() });
+    }
+
     return res.status(201).json(savedFile);
   }
 
